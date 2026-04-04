@@ -8,7 +8,7 @@ git clone git://g.csail.mit.edu/6.5840-golabs-2025 6.5840
 
 My implementation locates in `src/raft.go` `src/**/*.go`
 
-There are three parts but Now I only implement finish the first part.
+There are four parts, but Now I only implement finish the first part.
 
 You can run test by run `go test` **assuming your work directory at `src/`**
 
