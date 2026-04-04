@@ -1,3 +1,5 @@
+[![test_everynight](https://github.com/nawaphonOHM/Raft/actions/workflows/main.yml/badge.svg)](https://github.com/nawaphonOHM/Raft/actions/workflows/main.yml)
+
 This Repository is for a collection of Raft programs. It originally comes from
 
 ```bash
