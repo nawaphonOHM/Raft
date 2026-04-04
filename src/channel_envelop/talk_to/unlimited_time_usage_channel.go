@@ -1,0 +1,5 @@
+package talk_to
+
+import "raft/src/unlimited_time_usage_channel/unlimited_time_usage_channel_api_for"
+
+type UnlimitedTimeUsageChannel unlimited_time_usage_channel_api_for.ChannelEnvelop

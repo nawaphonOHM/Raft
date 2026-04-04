@@ -1,0 +1,7 @@
+package election_consideration_builder_talk_to
+
+import (
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
+)
+
+type LimitedTimeUsageChannel limited_time_usage_channel_api_for.ElectionConsideration

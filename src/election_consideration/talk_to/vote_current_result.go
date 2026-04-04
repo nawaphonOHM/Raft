@@ -1,0 +1,5 @@
+package talk_to
+
+import "raft/src/vote_current_result/vote_current_result_api_for"
+
+type VoteCurrentResult vote_current_result_api_for.ElectionConsideration
