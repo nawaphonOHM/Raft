@@ -502,95 +502,10 @@ func (rf *Raft) appendEntriesHeartbeatMode(args *dto.AppendEntriesArgs, reply *d
 
 func (rf *Raft) appendEntriesNotHeartbeatMode(args *dto.AppendEntriesArgs, reply *dto.AppendEntriesReply) {
 
+	// TODO: implantation me
+
 	panic("implement me")
 
-	// TODO: implantation is not complete
-
-	//log_collection_type.Printf("[WorkerId %v][term %v][State: %v]: received AppendEntries RPC from peer %v\n",
-	//	rf.me,
-	//	rf.currentTerm,
-	//	args.LeaderId,
-	//	convertToStateString(rf.state),
-	//)
-	//
-	//if args.Term < rf.currentTerm {
-	//	reply.Term = rf.currentTerm
-	//	reply.Success = false
-	//
-	//	log_collection_type.Printf("[WorkerId %v][term %v][State: %v]: received AppendEntries RPC with term %v but I think current term is %v, so reject it\n",
-	//		rf.me,
-	//		rf.currentTerm,
-	//		args.Term,
-	//		rf.currentTerm,
-	//		convertToStateString(rf.state),
-	//	)
-	//
-	//	return
-	//}
-	//
-	//pass, err := rf.log_collection_type.validate(args.PrevLogTerm, args.PrevLogIndex)
-	//
-	//{
-	//	cannotAccessError := &CannotAccessError{}
-	//
-	//	isCannotAccessError := errors.As(err, &cannotAccessError)
-	//
-	//	if !pass && isCannotAccessError {
-	//		reply.Term = rf.currentTerm
-	//		reply.Success = false
-	//
-	//		log_collection_type.Printf("[WorkerId %v][term %v][State: %v]: received AppendEntries RPC with prevLogIndex %v but I cannot access it, so reject it\n",
-	//			rf.me,
-	//			rf.currentTerm,
-	//			args.PrevLogIndex,
-	//			convertToStateString(rf.state),
-	//		)
-	//
-	//		return
-	//	}
-	//
-	//}
-	//
-	//{
-	//	candidateTermMismatchError := &CandidateTermMismatch{}
-	//
-	//	isCandidateTermMismatchError := errors.As(err, &candidateTermMismatchError)
-	//
-	//	if !pass && isCandidateTermMismatchError {
-	//
-	//		log_collection_type.Printf("[WorkerId %v][term %v][State: %v]: received AppendEntries RPC with prevLogIndex %v but my term in log_collection_type index %v is not a term %v \n",
-	//			rf.me,
-	//			rf.currentTerm,
-	//			args.PrevLogIndex,
-	//			args.PrevLogIndex,
-	//			args.PrevLogTerm,
-	//			convertToStateString(rf.state),
-	//		)
-	//
-	//		for index := args.PrevLogIndex; index < rf.log_collection_type.size(); index++ {
-	//			rf.log_collection_type.remove(index)
-	//		}
-	//
-	//	}
-	//}
-	//
-	//if args.Term > rf.currentTerm {
-	//	log_collection_type.Printf("[WorkerId %v][term %v][State: %v]: received AppendEntries RPC with term %v but I think current term is %v, so update it\n",
-	//		rf.me,
-	//		rf.currentTerm,
-	//		args.Term,
-	//		rf.currentTerm,
-	//		convertToStateString(rf.state),
-	//	)
-	//	rf.currentTerm = args.Term
-	//}
-	//
-	//reply.Term = rf.currentTerm
-	//reply.Success = true
-	//
-	//if args.LeaderCommit > rf.commitIndex {
-	//	rf.commitIndex = min(args.LeaderCommit, rf.log_collection_type.size()-1)
-	//}
 }
 
 func (rf *Raft) AppendEntries(args *dto.AppendEntriesArgs, reply *dto.AppendEntriesReply) {
