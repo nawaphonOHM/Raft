@@ -65,8 +65,8 @@ type Raft struct {
 
 	state raft_type.State
 
-	stateChangeSubscribers []raft_talk_to.LimitedTimeUsageChannel
-	currentTermSubscribers []raft_talk_to.LimitedTimeUsageChannel
+	stateChangeSubscribers []raft_talk_to.ChannelEnvelop
+	currentTermSubscribers []raft_talk_to.ChannelEnvelop
 
 	clock talk_to.Clock
 
@@ -128,15 +128,20 @@ func (rf *Raft) signalStateChange() {
 func (rf *Raft) signalCurrentTermChange() {
 
 	for _, subscriber := range rf.currentTermSubscribers {
-		subscriber.Notify()
+
+		if subscriber.IsBroken() {
+			continue
+		}
+
+		subscriber.Notify(rf.currentTerm)
 	}
 }
 
 func (rf *Raft) clearDeadSignal() {
 
-	var newArray []raft_talk_to.LimitedTimeUsageChannel
+	var newArray []raft_talk_to.ChannelEnvelop
 
-	newArray = make([]raft_talk_to.LimitedTimeUsageChannel, 0)
+	newArray = make([]raft_talk_to.ChannelEnvelop, 0)
 
 	for _, subscriber := range rf.stateChangeSubscribers {
 		if !subscriber.IsBroken() {
@@ -146,7 +151,7 @@ func (rf *Raft) clearDeadSignal() {
 
 	rf.stateChangeSubscribers = newArray
 
-	newArray = make([]raft_talk_to.LimitedTimeUsageChannel, 0)
+	newArray = make([]raft_talk_to.ChannelEnvelop, 0)
 
 	for _, subscriber := range rf.currentTermSubscribers {
 		if !subscriber.IsBroken() {
@@ -187,7 +192,7 @@ func (rf *Raft) SetCurrentTermAndVoteFor(newCurrentTerm int, voteFor ...int) {
 	rf.clearDeadSignal()
 }
 
-func (rf *Raft) SubscribeStateChange(subObj raft_talk_to.LimitedTimeUsageChannel, expectedState raft_type.State) bool {
+func (rf *Raft) SubscribeStateChange(subObj raft_talk_to.ChannelEnvelop, expectedState raft_type.State) bool {
 
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
@@ -201,7 +206,7 @@ func (rf *Raft) SubscribeStateChange(subObj raft_talk_to.LimitedTimeUsageChannel
 	return true
 }
 
-func (rf *Raft) SubscribeCurrentTermChange(subObj raft_talk_to.LimitedTimeUsageChannel, expectedTermNumber int) bool {
+func (rf *Raft) SubscribeCurrentTermChange(subObj raft_talk_to.ChannelEnvelop, expectedTermNumber int) bool {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
 
@@ -971,8 +976,8 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.log = log_collection.NewLogCollection()
 	rf.clock = clock.NewClock(rf.me)
 	rf.leaderTerm = make([]int, 0)
-	rf.stateChangeSubscribers = make([]raft_talk_to.LimitedTimeUsageChannel, 0)
-	rf.currentTermSubscribers = make([]raft_talk_to.LimitedTimeUsageChannel, 0)
+	rf.stateChangeSubscribers = make([]raft_talk_to.ChannelEnvelop, 0)
+	rf.currentTermSubscribers = make([]raft_talk_to.ChannelEnvelop, 0)
 
 	rf.state = raft_state.FOLLOWER
 

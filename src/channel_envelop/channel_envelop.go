@@ -20,10 +20,15 @@ func (e *channelEnvelop) Notify(data ...interface{}) {
 }
 
 func (e *channelEnvelop) IsBroken() bool {
-	if instance_, ok := e.instance.(talk_to.LimitedTimeUsageChannel); ok {
-		return instance_.IsBroken()
-	}
-	return false
+	return e.instance.(internal_used_interfaace.UnionBehavioral).IsBroken()
+}
+
+func (e *channelEnvelop) Close() {
+	e.instance.(talk_to.UnlimitedTimeUsageChannel).Close()
+}
+
+func (e *channelEnvelop) Channel() <-chan interface{} {
+	return e.instance.(internal_used_interfaace.UnionBehavioral).Channel()
 }
 
 func NewChannelEnvelop(instance interface{}) main_interface.ChannelInterface {

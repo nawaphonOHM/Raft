@@ -6,7 +6,7 @@ import (
 )
 
 type ElectionProcess interface {
-	SubscribeStateChange(subObj raft_talk_to.LimitedTimeUsageChannel, expectedState raft_type.State) bool
+	SubscribeStateChange(subObj raft_talk_to.ChannelEnvelop, expectedState raft_type.State) bool
 	SetNextIndexAndMatchIndex(nextIndex []int, matchIndex []int)
 	SetState(newState raft_type.State)
 }

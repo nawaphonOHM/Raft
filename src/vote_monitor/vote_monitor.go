@@ -57,6 +57,7 @@ func (v *voteMonitor) validate(result *dto.RequestVoteReply) {
 				v.peerInformation.InstanceId(),
 			)))
 			v.cancelFunction()
+			v.requiredParamsFromRaft.Close()
 
 			log.Printf("[WorkerId %v][term %v][State: %v][vote monitor id %p]: Received cancel ongoing task...LEAVE and kill approve channel ref %p\n",
 				v.requiredParamsFromRaft.WorkerId(),
@@ -96,6 +97,7 @@ func (v *voteMonitor) validate(result *dto.RequestVoteReply) {
 				)))
 
 				v.cancelFunction()
+				v.requiredParamsFromRaft.Close()
 
 				return
 			}
@@ -104,6 +106,7 @@ func (v *voteMonitor) validate(result *dto.RequestVoteReply) {
 
 			if receivedTerm < 0 {
 				v.cancelFunction()
+				v.requiredParamsFromRaft.Close()
 
 				log.Printf("[WorkerId %v][term %v][State: %v][vote monitor id %p]: peer %v denies me to be a leader for a reason a, Stop My task and kill approve channel ref %p\n",
 					v.requiredParamsFromRaft.WorkerId(),
@@ -117,7 +120,7 @@ func (v *voteMonitor) validate(result *dto.RequestVoteReply) {
 				return
 			}
 
-			if v.requiredParamsFromRaft.GetLastUpdateCurrentTerm() < receivedTerm {
+			if v.requiredParamsFromRaft.CurrentTerm() < receivedTerm {
 
 				log.Printf("[WorkerId %v][term %v][State: %v][vote monitor id %p]: peer %v denies me to be a leader because I has outdated term update term %v to term %v and request vote again.\n",
 					v.requiredParamsFromRaft.WorkerId(),

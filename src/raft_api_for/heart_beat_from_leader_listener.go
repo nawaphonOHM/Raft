@@ -6,7 +6,7 @@ import (
 )
 
 type HeartBeatFromLeaderListener interface {
-	SubscribeCurrentTermChange(subObj raft_talk_to.LimitedTimeUsageChannel, expectedTermNumber int) bool
-	SubscribeStateChange(subObj raft_talk_to.LimitedTimeUsageChannel, expectedState raft_type.State) bool
+	SubscribeCurrentTermChange(subObj raft_talk_to.ChannelEnvelop, expectedTermNumber int) bool
+	SubscribeStateChange(subObj raft_talk_to.ChannelEnvelop, expectedState raft_type.State) bool
 	SetState(newState raft_type.State)
 }
