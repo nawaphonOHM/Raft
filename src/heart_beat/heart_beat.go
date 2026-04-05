@@ -67,7 +67,7 @@ func (h *heartbeat) sendHeartbeatSignal() {
 	args := h.buildArgs()
 
 	for index, peer := range h.raftParams.Peers() {
-		if index == int(h.raftParams.WorkerId()) {
+		if index == h.raftParams.WorkerId() {
 			continue
 		}
 		go h.signal(args, peer)

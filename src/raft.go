@@ -268,7 +268,7 @@ func (rf *Raft) GetState() (int, bool) {
 
 	rf.mu.Lock()
 	state := rf.state
-	term = int(rf.currentTerm)
+	term = rf.currentTerm
 	workerId := rf.me
 	rf.mu.Unlock()
 
