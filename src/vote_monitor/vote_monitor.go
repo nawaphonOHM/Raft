@@ -52,10 +52,14 @@ func (v *voteMonitor) validate(result *dto.RequestVoteReply) {
 	select {
 	case <-v.theContext.Done():
 		{
-			v.approveSignal.Notify(dto.NewVoteCommand(0, raft_state.Close, fmt.Sprintf(
-				"VOTE_MONITOR_FOR_%v",
-				v.peerInformation.InstanceId(),
-			)))
+			v.approveSignal.Notify(&dto.VoteCommand{
+				Point:            0,
+				ChannelOperation: raft_state.Close,
+				Sender: fmt.Sprintf(
+					"VOTE_MONITOR_FOR_%v",
+					v.peerInformation.InstanceId(),
+				),
+			})
 			v.cancelFunction()
 			v.requiredParamsFromRaft.Close()
 
@@ -91,10 +95,14 @@ func (v *voteMonitor) validate(result *dto.RequestVoteReply) {
 					v.approveSignal,
 				)
 
-				v.approveSignal.Notify(dto.NewVoteCommand(1, raft_state.Close, fmt.Sprintf(
-					"VOTE_MONITOR_FOR_%v",
-					v.peerInformation.InstanceId(),
-				)))
+				v.approveSignal.Notify(&dto.VoteCommand{
+					Point:            1,
+					ChannelOperation: raft_state.Close,
+					Sender: fmt.Sprintf(
+						"VOTE_MONITOR_FOR_%v",
+						v.peerInformation.InstanceId(),
+					),
+				})
 
 				v.cancelFunction()
 				v.requiredParamsFromRaft.Close()

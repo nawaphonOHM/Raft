@@ -29,7 +29,8 @@ func (h *heartbeat) signal(args *dto.AppendEntriesArgs, peer *labrpc.ClientEnd) 
 
 func (h *heartbeat) buildArgs() *dto.AppendEntriesArgs {
 
-	if noLogError := customerror.NewItHasNoLogError(); errors.As(h.raftParams.LogInformation().Err, &noLogError) {
+	var noLogError *customerror.ItHasNoLogError
+	if errors.As(h.raftParams.LogInformation().Err, &noLogError) {
 		return &dto.AppendEntriesArgs{
 			Term:         h.raftParams.CurrentTerm(),
 			LeaderId:     h.raftParams.WorkerId(),
@@ -40,7 +41,8 @@ func (h *heartbeat) buildArgs() *dto.AppendEntriesArgs {
 		}
 	}
 
-	if onlyOneLogError := customerror.NewItHasOnlyOneLogError(); errors.As(h.raftParams.LogInformation().Err, &onlyOneLogError) {
+	var onlyOneLogError *customerror.ItHasOnlyOneLogError
+	if errors.As(h.raftParams.LogInformation().Err, &onlyOneLogError) {
 		return &dto.AppendEntriesArgs{
 			Term:         h.raftParams.CurrentTerm(),
 			LeaderId:     h.raftParams.WorkerId(),

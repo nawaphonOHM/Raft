@@ -230,7 +230,11 @@ func (e *electionProcess) requestOtherWorkersAcceptLeader() {
 		raft_state.ConvertToStateString(e.raftParams.State()),
 	)
 
-	channels[rand.Intn(len(channels))].Notify(dto.NewVoteCommand(1, raft_state.NoClose, "MY_SELF"))
+	channels[rand.Intn(len(channels))].Notify(&dto.VoteCommand{
+		Point:            1,
+		ChannelOperation: raft_state.NoClose,
+		Sender:           "MY_SELF",
+	})
 
 	log.Printf(
 		"[WorkerId %v][term %v][State: %v]: As I vote my self successfully, so I will doing add 1 point... Done!!!\n",
