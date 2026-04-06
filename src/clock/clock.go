@@ -19,7 +19,7 @@ type clock struct {
 
 	lock sync.Mutex
 
-	machine interface{}
+	machine int
 
 	timeOutSub map[int][]chan<- bool
 
