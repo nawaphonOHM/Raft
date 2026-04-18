@@ -43,6 +43,9 @@ func (c *unlimitedTimeUsageChannel) Channel() <-chan interface{} {
 }
 
 func (c *unlimitedTimeUsageChannel) IsBroken() bool {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
 	return c.isBroken
 }
 
