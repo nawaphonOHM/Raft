@@ -8,14 +8,14 @@ import (
 )
 
 type unlimitedTimeUsageChannel struct {
-	ch chan interface{}
+	ch chan any
 
 	isBroken bool
 
 	lock sync.Mutex
 }
 
-func (c *unlimitedTimeUsageChannel) Notify(data ...interface{}) {
+func (c *unlimitedTimeUsageChannel) Notify(data ...any) {
 
 	if len(data) > 1 {
 		log.Fatalf("only one data is allowed")
@@ -38,7 +38,7 @@ func (c *unlimitedTimeUsageChannel) Close() {
 	c.isBroken = true
 }
 
-func (c *unlimitedTimeUsageChannel) Channel() <-chan interface{} {
+func (c *unlimitedTimeUsageChannel) Channel() <-chan any {
 	return c.ch
 }
 
@@ -50,5 +50,5 @@ func (c *unlimitedTimeUsageChannel) IsBroken() bool {
 }
 
 func NewUnlimitedTimeUsageChannel() main_interface.UnlimitedTimeUsageChannel {
-	return &unlimitedTimeUsageChannel{ch: make(chan interface{}, 1), isBroken: false}
+	return &unlimitedTimeUsageChannel{ch: make(chan any, 1), isBroken: false}
 }

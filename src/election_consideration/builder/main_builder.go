@@ -10,7 +10,7 @@ import (
 )
 
 type builder struct {
-	voteCurrentResult interface{}
+	voteCurrentResult any
 
 	approveChannel election_consideration_builder_talk_to.LimitedTimeUsageChannel
 	context        context.Context
@@ -48,6 +48,6 @@ func (b *builder) SetContext(context context.Context) {
 	b.context = context
 }
 
-func NewBuilder(voteCurrentResult interface{}) election_consideration_builder_main_interface.Builder {
+func NewBuilder(voteCurrentResult any) election_consideration_builder_main_interface.Builder {
 	return &builder{voteCurrentResult: voteCurrentResult}
 }

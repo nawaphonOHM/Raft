@@ -66,7 +66,7 @@ func NewRaft(
 	currentTerm int,
 	workingId int,
 	state raft_type.State,
-	logCollection interface{},
+	logCollection any,
 	clock talk_to.Clock,
 	instance talk_to.Raft,
 ) Raft {

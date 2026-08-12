@@ -1,6 +1,6 @@
 package change_checker
 
-func IsChange[T interface{}](ch <-chan T) bool {
+func IsChange[T any](ch <-chan T) bool {
 
 	if ch == nil {
 		return false

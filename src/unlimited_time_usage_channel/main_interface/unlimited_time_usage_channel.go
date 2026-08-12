@@ -1,8 +1,8 @@
 package main_interface
 
 type UnlimitedTimeUsageChannel interface {
-	Notify(data ...interface{})
+	Notify(data ...any)
 	Close()
-	Channel() <-chan interface{}
+	Channel() <-chan any
 	IsBroken() bool
 }

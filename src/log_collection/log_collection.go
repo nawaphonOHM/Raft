@@ -120,7 +120,7 @@ func (l *logCollection) publishChangesToSubscribers(latestIndex int) {
 }
 
 func (l *logCollection) SubscribeLogChange(
-	channel interface{},
+	channel any,
 	logSize int,
 ) bool {
 

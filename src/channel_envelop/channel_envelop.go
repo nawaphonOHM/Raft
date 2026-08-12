@@ -10,10 +10,10 @@ import (
 )
 
 type channelEnvelop struct {
-	instance interface{}
+	instance any
 }
 
-func (e *channelEnvelop) Notify(data ...interface{}) {
+func (e *channelEnvelop) Notify(data ...any) {
 
 	e.instance.(internal_used_interfaace.UnionBehavioral).Notify(data...)
 
@@ -27,13 +27,13 @@ func (e *channelEnvelop) Close() {
 	e.instance.(talk_to.UnlimitedTimeUsageChannel).Close()
 }
 
-func (e *channelEnvelop) Channel() <-chan interface{} {
+func (e *channelEnvelop) Channel() <-chan any {
 	return e.instance.(internal_used_interfaace.UnionBehavioral).Channel()
 }
 
-func NewChannelEnvelop(instance interface{}) main_interface.ChannelInterface {
+func NewChannelEnvelop(instance any) main_interface.ChannelInterface {
 
-	var type__ interface{}
+	var type__ any
 
 	switch type_ := instance.(type) {
 	case nil:

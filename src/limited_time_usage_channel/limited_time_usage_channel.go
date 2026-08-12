@@ -9,10 +9,10 @@ import (
 type limitedTimeUsageChannel struct {
 	live int
 
-	ch chan interface{}
+	ch chan any
 }
 
-func (l *limitedTimeUsageChannel) Notify(data ...interface{}) {
+func (l *limitedTimeUsageChannel) Notify(data ...any) {
 
 	if len(data) > 1 {
 		log.Fatalf("[Notify]: only one data is allowed")
@@ -34,7 +34,7 @@ func (l *limitedTimeUsageChannel) Notify(data ...interface{}) {
 	l.considerToCloseChannel()
 }
 
-func (l *limitedTimeUsageChannel) Channel() <-chan interface{} {
+func (l *limitedTimeUsageChannel) Channel() <-chan any {
 
 	return l.ch
 
@@ -59,5 +59,5 @@ func NewLimitedTimeUsageChannel(live int) main_interface.LimitedTimeUsageChannel
 		log.Fatalf("live must be greater than 0")
 	}
 
-	return &limitedTimeUsageChannel{live: live, ch: make(chan interface{}, live)}
+	return &limitedTimeUsageChannel{live: live, ch: make(chan any, live)}
 }

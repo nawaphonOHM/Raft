@@ -9,5 +9,5 @@ type Raft interface {
 	Add(log talk_to.Log)
 	Validate(candidateTerm int, index int) (bool, error)
 	GetLatestLogIndexMinusOneAndLatestTermMinusOne() *dto.LatestLogIndexMinusOneAndLatestLogMinusOne
-	SubscribeLogChange(channel interface{}, logSize int) bool
+	SubscribeLogChange(channel any, logSize int) bool
 }

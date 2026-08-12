@@ -288,7 +288,7 @@ func voteItself() bool {
 
 func NewElection(
 	raftParams election_process_required_params.Raft,
-	voteMonitor []interface{},
+	voteMonitor []any,
 	voteCurrentResult talk_to.VoteCurrentResult,
 	electionConsiderationBuilder talk_to.ElectionConsiderationBuilder,
 ) main_interface.ElectionProcess {

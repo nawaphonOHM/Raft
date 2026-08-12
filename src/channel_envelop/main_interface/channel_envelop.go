@@ -2,7 +2,7 @@ package main_interface
 
 type ChannelInterface interface {
 	IsBroken() bool
-	Notify(data ...interface{})
+	Notify(data ...any)
 	Close()
-	Channel() <-chan interface{}
+	Channel() <-chan any
 }

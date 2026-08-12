@@ -1,7 +1,7 @@
 package main_interface
 
 type LimitedTimeUsageChannel interface {
-	Notify(data ...interface{})
-	Channel() <-chan interface{}
+	Notify(data ...any)
+	Channel() <-chan any
 	IsBroken() bool
 }

@@ -78,7 +78,7 @@ func (e *electionConsideration) Consider() {
 func NewElectionConsideration(
 	approveChannel talk_to.LimitedTimeUsageChannel,
 	ctx context.Context,
-	currentSituation interface{},
+	currentSituation any,
 ) election_consideration_main_interface.ElectionConsideration {
 
 	return &electionConsideration{

@@ -9,7 +9,7 @@ type LogCollection interface {
 	LogAt(index int) talk_to.Log
 	Validate(candidateTerm int, index int) (bool, error)
 	Add(newLog talk_to.Log)
-	SubscribeLogChange(channel interface{}, logSize int) bool
+	SubscribeLogChange(channel any, logSize int) bool
 	Size() int
 	GetLatestLogIndexMinusOneAndLatestTermMinusOne() *dto.LatestLogIndexMinusOneAndLatestLogMinusOne
 }

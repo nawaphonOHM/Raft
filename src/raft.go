@@ -89,7 +89,7 @@ func (rf *Raft) logChangesSubscribe() {
 		log.Fatal("Expected to be able to subscribe to log changes")
 	}
 
-	go func(self *Raft, channel <-chan interface{}) {
+	go func(self *Raft, channel <-chan any) {
 
 		for {
 			theMostIndex := <-channel
@@ -688,7 +688,7 @@ func (rf *Raft) sendRequestVote(server int, args *dto.RequestVoteArgs, reply *Re
 // if it's ever committed. the second return value is the current
 // term. the third return value is true if this server believes it is
 // the leader.
-func (rf *Raft) Start(command interface{}) (int, int, bool) {
+func (rf *Raft) Start(command any) (int, int, bool) {
 	index := -1
 	term := -1
 	isLeader := true
@@ -867,7 +867,7 @@ func (rf *Raft) ticker() {
 				state,
 			)
 
-			voteMonitors := make([]interface{}, 0)
+			voteMonitors := make([]any, 0)
 
 			for peerId, peer := range rf.peers {
 				voteMonitors = append(
