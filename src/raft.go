@@ -19,21 +19,23 @@ import (
 	"raft/libs/labrpc"
 	"raft/libs/raftapi"
 	"raft/libs/tester1"
+	"raft/src/channel_envelop/channel_envelop_api_for"
 	"raft/src/clock"
+	"raft/src/clock/clock_api_for"
 	"raft/src/dto"
 	"raft/src/election_consideration/builder"
 	"raft/src/election_process"
 	"raft/src/election_process/election_process_required_params"
 	"raft/src/election_result"
+	"raft/src/election_result/election_result_api_for"
 	"raft/src/heart_beat"
 	"raft/src/heart_beat/heart_beat_required_params"
 	"raft/src/heart_beat_from_leader_listener"
 	"raft/src/heart_beat_from_leader_listener/heart_beat_listener_required_params"
-	"raft/src/heart_beat_from_leader_listener/talk_to"
 	"raft/src/log_collection"
 	definedLog "raft/src/log_collection/log"
+	"raft/src/log_collection/main_interface"
 	"raft/src/raft_state"
-	"raft/src/raft_talk_to"
 	"raft/src/raft_type"
 	"raft/src/unlimited_time_usage_channel"
 	"raft/src/vote_current_result"
@@ -51,7 +53,7 @@ type Raft struct {
 
 	currentTerm int
 	votedFor    *int
-	log         raft_talk_to.LogCollection
+	log         main_interface.LogCollection
 
 	commitIndex int
 	lastApplied int
@@ -65,10 +67,10 @@ type Raft struct {
 
 	state raft_type.State
 
-	stateChangeSubscribers []raft_talk_to.ChannelEnvelop
-	currentTermSubscribers []raft_talk_to.ChannelEnvelop
+	stateChangeSubscribers []channel_envelop_api_for.Raft
+	currentTermSubscribers []channel_envelop_api_for.Raft
 
-	clock talk_to.Clock
+	clock clock_api_for.HeartBeatFromLeaderListener
 
 	leaderTerm []int
 }
@@ -139,9 +141,9 @@ func (rf *Raft) signalCurrentTermChange() {
 
 func (rf *Raft) clearDeadSignal() {
 
-	var newArray []raft_talk_to.ChannelEnvelop
+	var newArray []channel_envelop_api_for.Raft
 
-	newArray = make([]raft_talk_to.ChannelEnvelop, 0)
+	newArray = make([]channel_envelop_api_for.Raft, 0)
 
 	for _, subscriber := range rf.stateChangeSubscribers {
 		if !subscriber.IsBroken() {
@@ -151,7 +153,7 @@ func (rf *Raft) clearDeadSignal() {
 
 	rf.stateChangeSubscribers = newArray
 
-	newArray = make([]raft_talk_to.ChannelEnvelop, 0)
+	newArray = make([]channel_envelop_api_for.Raft, 0)
 
 	for _, subscriber := range rf.currentTermSubscribers {
 		if !subscriber.IsBroken() {
@@ -192,7 +194,7 @@ func (rf *Raft) SetCurrentTermAndVoteFor(newCurrentTerm int, voteFor ...int) {
 	rf.clearDeadSignal()
 }
 
-func (rf *Raft) SubscribeStateChange(subObj raft_talk_to.ChannelEnvelop, expectedState raft_type.State) bool {
+func (rf *Raft) SubscribeStateChange(subObj channel_envelop_api_for.Raft, expectedState raft_type.State) bool {
 
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
@@ -206,7 +208,7 @@ func (rf *Raft) SubscribeStateChange(subObj raft_talk_to.ChannelEnvelop, expecte
 	return true
 }
 
-func (rf *Raft) SubscribeCurrentTermChange(subObj raft_talk_to.ChannelEnvelop, expectedTermNumber int) bool {
+func (rf *Raft) SubscribeCurrentTermChange(subObj channel_envelop_api_for.Raft, expectedTermNumber int) bool {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
 
@@ -900,7 +902,7 @@ func (rf *Raft) ticker() {
 				election_consideration_builder_api_for.NewBuilder(voteCurrentResult),
 			).StartElection()
 
-			if voteCurrentResult.ElectionResult().(raft_talk_to.ElectionResult).Accept() {
+			if voteCurrentResult.ElectionResult().(election_result_api_for.Raft).Accept() {
 				rf.mu.Lock()
 				rf.setState(raft_state.LEADER)
 				rf.mu.Unlock()
@@ -976,8 +978,8 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.log = log_collection.NewLogCollection()
 	rf.clock = clock.NewClock(rf.me)
 	rf.leaderTerm = make([]int, 0)
-	rf.stateChangeSubscribers = make([]raft_talk_to.ChannelEnvelop, 0)
-	rf.currentTermSubscribers = make([]raft_talk_to.ChannelEnvelop, 0)
+	rf.stateChangeSubscribers = make([]channel_envelop_api_for.Raft, 0)
+	rf.currentTermSubscribers = make([]channel_envelop_api_for.Raft, 0)
 
 	rf.state = raft_state.FOLLOWER
 

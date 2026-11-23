@@ -7,24 +7,25 @@ import (
 
 	"raft/libs/labrpc"
 	"raft/src/dto"
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
 	"raft/src/raft_state"
 	"raft/src/vote_monitor/internal_struct/peer_information"
+	"raft/src/vote_monitor/internal_struct/peer_information/peer_information_api_for"
 	"raft/src/vote_monitor/main_interface"
-	"raft/src/vote_monitor/talk_to"
 	"raft/src/vote_monitor/vote_monitor_required_params"
 )
 
 type voteMonitor struct {
-	peerInformation        talk_to.PeerInformation
+	peerInformation        peer_information_api_for.VoteMonitor
 	requestParam           *dto.RequestVoteArgs
 	theContext             context.Context
-	approveSignal          talk_to.LimitedTimeUsageChannel
+	approveSignal          limited_time_usage_channel_api_for.VoteMonitor
 	requiredParamsFromRaft vote_monitor_required_params.Raft
 
 	cancelFunction context.CancelFunc
 }
 
-func (v *voteMonitor) SetApproveChannel(channel talk_to.LimitedTimeUsageChannel) {
+func (v *voteMonitor) SetApproveChannel(channel limited_time_usage_channel_api_for.VoteMonitor) {
 
 	v.approveSignal = channel
 

@@ -5,9 +5,10 @@ import (
 	"sync"
 
 	"raft/src/channel_envelop"
+	"raft/src/channel_envelop/channel_envelop_api_for"
+	"raft/src/raft_api_for"
 	"raft/src/raft_type"
 	"raft/src/unlimited_time_usage_channel"
-	"raft/src/vote_monitor/talk_to"
 )
 
 type Raft interface {
@@ -25,9 +26,9 @@ type raft struct {
 	currentTerm int
 	state       raft_type.State
 
-	instance talk_to.Raft
+	instance raft_api_for.VoteMonitor
 
-	channelEnvelop talk_to.ChannelEnvelop
+	channelEnvelop channel_envelop_api_for.VoteMonitor
 
 	lock sync.Mutex
 }
@@ -79,7 +80,7 @@ func NewRaft(
 	workerId int,
 	currentTerm int,
 	state raft_type.State,
-	instance talk_to.Raft,
+	instance raft_api_for.VoteMonitor,
 ) Raft {
 
 	channelEnvelop := channel_envelop.NewChannelEnvelop(unlimited_time_usage_channel.NewUnlimitedTimeUsageChannel())

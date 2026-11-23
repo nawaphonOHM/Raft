@@ -6,17 +6,18 @@ import (
 
 	"raft/src/election_consideration"
 	"raft/src/election_consideration/builder/election_consideration_builder_main_interface"
-	"raft/src/election_consideration/builder/election_consideration_builder_talk_to"
+	"raft/src/election_consideration/election_consideration_api_for"
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
 )
 
 type builder struct {
 	voteCurrentResult any
 
-	approveChannel election_consideration_builder_talk_to.LimitedTimeUsageChannel
+	approveChannel limited_time_usage_channel_api_for.ElectionConsideration
 	context        context.Context
 }
 
-func (b *builder) Build() election_consideration_builder_talk_to.ElectionConsideration {
+func (b *builder) Build() election_consideration_api_for.ElectionConsiderationBuilder {
 
 	if b.approveChannel == nil {
 		log.Fatalln("approve channel is nil")
@@ -40,7 +41,7 @@ func (b *builder) clearAfterBuild() {
 	b.context = nil
 }
 
-func (b *builder) SetApproveChannel(ch election_consideration_builder_talk_to.LimitedTimeUsageChannel) {
+func (b *builder) SetApproveChannel(ch limited_time_usage_channel_api_for.ElectionConsideration) {
 	b.approveChannel = ch
 }
 

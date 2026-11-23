@@ -1,7 +1,10 @@
 package heart_beat_listener_required_params
 
 import (
-	"raft/src/heart_beat_from_leader_listener/talk_to"
+	"raft/src/clock/clock_api_for"
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
+	"raft/src/log_collection/log_collection_api_for"
+	"raft/src/raft_api_for"
 	"raft/src/raft_type"
 )
 
@@ -9,11 +12,11 @@ type Raft interface {
 	CurrentTerm() int
 	WorkingId() int
 	State() raft_type.State
-	LogCollection() talk_to.LogCollection
-	Clock() talk_to.Clock
+	LogCollection() log_collection_api_for.HeartBeatListener
+	Clock() clock_api_for.HeartBeatFromLeaderListener
 
-	SubscribeStateChange(ch talk_to.LimitedTimeUsageChannel, expectedState raft_type.State) bool
-	SubscribeCurrentTermChange(ch talk_to.LimitedTimeUsageChannel, expectedTerm int) bool
+	SubscribeStateChange(ch limited_time_usage_channel_api_for.HeartBeatFromLeaderListener, expectedState raft_type.State) bool
+	SubscribeCurrentTermChange(ch limited_time_usage_channel_api_for.HeartBeatFromLeaderListener, expectedTerm int) bool
 
 	SetState(newState raft_type.State)
 }
@@ -23,30 +26,30 @@ type raft struct {
 	workingId   int
 	state       raft_type.State
 
-	logCollection talk_to.LogCollection
+	logCollection log_collection_api_for.HeartBeatListener
 
-	clock talk_to.Clock
+	clock clock_api_for.HeartBeatFromLeaderListener
 
-	instance talk_to.Raft
+	instance raft_api_for.HeartBeatFromLeaderListener
 }
 
 func (r *raft) SetState(newState raft_type.State) {
 	r.instance.SetState(newState)
 }
 
-func (r *raft) SubscribeCurrentTermChange(ch talk_to.LimitedTimeUsageChannel, expectedTerm int) bool {
+func (r *raft) SubscribeCurrentTermChange(ch limited_time_usage_channel_api_for.HeartBeatFromLeaderListener, expectedTerm int) bool {
 	return r.instance.SubscribeCurrentTermChange(ch, expectedTerm)
 }
 
-func (r *raft) SubscribeStateChange(ch talk_to.LimitedTimeUsageChannel, expectedState raft_type.State) bool {
+func (r *raft) SubscribeStateChange(ch limited_time_usage_channel_api_for.HeartBeatFromLeaderListener, expectedState raft_type.State) bool {
 	return r.instance.SubscribeStateChange(ch, expectedState)
 }
 
-func (r *raft) Clock() talk_to.Clock {
+func (r *raft) Clock() clock_api_for.HeartBeatFromLeaderListener {
 	return r.clock
 }
 
-func (r *raft) LogCollection() talk_to.LogCollection {
+func (r *raft) LogCollection() log_collection_api_for.HeartBeatListener {
 	return r.logCollection
 }
 
@@ -67,15 +70,15 @@ func NewRaft(
 	workingId int,
 	state raft_type.State,
 	logCollection any,
-	clock talk_to.Clock,
-	instance talk_to.Raft,
+	clock clock_api_for.HeartBeatFromLeaderListener,
+	instance raft_api_for.HeartBeatFromLeaderListener,
 ) Raft {
 
 	return &raft{
 		currentTerm:   currentTerm,
 		workingId:     workingId,
 		state:         state,
-		logCollection: logCollection.(talk_to.LogCollection),
+		logCollection: logCollection.(log_collection_api_for.HeartBeatListener),
 		clock:         clock,
 		instance:      instance,
 	}

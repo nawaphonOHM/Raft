@@ -1,5 +1,0 @@
-package election_consideration_builder_talk_to
-
-import "raft/src/election_consideration/election_consideration_api_for"
-
-type ElectionConsideration election_consideration_api_for.ElectionConsiderationBuilder

@@ -2,13 +2,15 @@ package election_process_required_params
 
 import (
 	"raft/libs/labrpc"
-	"raft/src/election_process/talk_to"
-	"raft/src/raft_talk_to"
+	"raft/src/clock/clock_api_for"
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
+	"raft/src/log_collection/log_collection_api_for"
+	"raft/src/raft_api_for"
 	"raft/src/raft_type"
 )
 
 type Raft interface {
-	Clock() talk_to.Clock
+	Clock() clock_api_for.ElectionProcess
 	WorkerId() int
 	CurrentTerm() int
 	State() raft_type.State
@@ -16,29 +18,29 @@ type Raft interface {
 	NextIndexSize() int
 	MatchIndexSize() int
 	Peers() []*labrpc.ClientEnd
-	Log() talk_to.LogCollection
+	Log() log_collection_api_for.ElectionProcess
 	VoteFor() *int
 
 	SetNextIndexAndMatchIndex(nextIndex []int, matchIndex []int)
 	SetState(newState raft_type.State)
 
-	SubscribeStateChange(subObj talk_to.LimitedTimeUsageChannel, expectedState raft_type.State) bool
+	SubscribeStateChange(subObj limited_time_usage_channel_api_for.ElectionProcess, expectedState raft_type.State) bool
 }
 
 type raft struct {
 	workerId       int
 	currentTerm    int
 	state          raft_type.State
-	clock          talk_to.Clock
+	clock          clock_api_for.ElectionProcess
 	peersSize      int
 	nextIndexSize  int
 	matchIndexSize int
 	peers          []*labrpc.ClientEnd
-	log            talk_to.LogCollection
+	log            log_collection_api_for.ElectionProcess
 
 	voteFor *int
 
-	instance talk_to.Raft
+	instance raft_api_for.ElectionProcess
 }
 
 func (r *raft) VoteFor() *int {
@@ -49,8 +51,8 @@ func (r *raft) SetState(newState raft_type.State) {
 	r.instance.SetState(newState)
 }
 
-func (r *raft) SubscribeStateChange(subObj talk_to.LimitedTimeUsageChannel, expectedState raft_type.State) bool {
-	return r.instance.SubscribeStateChange(subObj.(raft_talk_to.LimitedTimeUsageChannel), expectedState)
+func (r *raft) SubscribeStateChange(subObj limited_time_usage_channel_api_for.ElectionProcess, expectedState raft_type.State) bool {
+	return r.instance.SubscribeStateChange(subObj.(limited_time_usage_channel_api_for.Raft), expectedState)
 }
 
 func (r *raft) MatchIndexSize() int {
@@ -65,7 +67,7 @@ func (r *raft) SetNextIndexAndMatchIndex(nextIndex []int, matchIndex []int) {
 	r.instance.SetNextIndexAndMatchIndex(nextIndex, matchIndex)
 }
 
-func (r *raft) Clock() talk_to.Clock {
+func (r *raft) Clock() clock_api_for.ElectionProcess {
 	return r.clock
 }
 
@@ -89,7 +91,7 @@ func (r *raft) Peers() []*labrpc.ClientEnd {
 	return r.peers
 }
 
-func (r *raft) Log() talk_to.LogCollection {
+func (r *raft) Log() log_collection_api_for.ElectionProcess {
 	return r.log
 }
 
@@ -97,13 +99,13 @@ func NewRaft(
 	workerId int,
 	currentTerm int,
 	state raft_type.State,
-	clock talk_to.Clock,
+	clock clock_api_for.ElectionProcess,
 	peersSize int,
 	peers []*labrpc.ClientEnd,
-	log raft_talk_to.LogCollection,
+	log log_collection_api_for.ElectionProcess,
 	nextIndexSize int,
 	matchIndexSize int,
-	instance talk_to.Raft,
+	instance raft_api_for.ElectionProcess,
 	voteFor *int,
 ) Raft {
 	return &raft{
@@ -113,7 +115,7 @@ func NewRaft(
 		clock:          clock,
 		peersSize:      peersSize,
 		peers:          peers,
-		log:            log.(talk_to.LogCollection),
+		log:            log,
 		nextIndexSize:  nextIndexSize,
 		matchIndexSize: matchIndexSize,
 		instance:       instance,

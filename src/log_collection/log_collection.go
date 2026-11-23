@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"raft/src/channel_envelop"
+	"raft/src/channel_envelop/channel_envelop_api_for"
 	"raft/src/dto"
 	"raft/src/errors"
 	main_interface3 "raft/src/limited_time_usage_channel/main_interface"
@@ -16,7 +17,7 @@ import (
 type logCollection struct {
 	log []talk_to.Log
 
-	logChangeSubscribers []talk_to.ChannelEnvelop
+	logChangeSubscribers []channel_envelop_api_for.LogCollection
 
 	mutex sync.Mutex
 }
@@ -98,7 +99,7 @@ func (l *logCollection) Add(newLog talk_to.Log) {
 }
 
 func (l *logCollection) decideToRemoveBrokenSubscribers() {
-	newSubscribersArea := make([]talk_to.ChannelEnvelop, 0)
+	newSubscribersArea := make([]channel_envelop_api_for.LogCollection, 0)
 
 	for _, subscriber := range l.logChangeSubscribers {
 		if !subscriber.IsBroken() {
@@ -163,6 +164,6 @@ func (l *logCollection) Size() int {
 func NewLogCollection() main_interface.LogCollection {
 	return &logCollection{
 		log:                  make([]talk_to.Log, 0),
-		logChangeSubscribers: make([]talk_to.ChannelEnvelop, 0),
+		logChangeSubscribers: make([]channel_envelop_api_for.LogCollection, 0),
 	}
 }

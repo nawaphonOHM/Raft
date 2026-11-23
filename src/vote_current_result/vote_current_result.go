@@ -4,10 +4,10 @@ import (
 	"log"
 	"sync"
 
+	"raft/src/election_result/election_result_api_for"
 	"raft/src/raft_state"
 	"raft/src/raft_type"
 	"raft/src/vote_current_result/main_interface"
-	"raft/src/vote_current_result/talk_to"
 )
 
 type voteCurrentResult struct {
@@ -15,7 +15,7 @@ type voteCurrentResult struct {
 	all         int
 	probability float32
 
-	electionResult talk_to.ElectionResult
+	electionResult election_result_api_for.VoteCurrentResult
 
 	mu sync.Mutex
 
@@ -27,7 +27,7 @@ type voteCurrentResult struct {
 	currentTerm int
 }
 
-func (v *voteCurrentResult) ElectionResult() talk_to.ElectionResult {
+func (v *voteCurrentResult) ElectionResult() election_result_api_for.VoteCurrentResult {
 	v.mu.Lock()
 	defer v.mu.Unlock()
 
@@ -93,7 +93,7 @@ func (v *voteCurrentResult) SetError(err error) {
 
 func NewVoteCurrentResult(
 	all int,
-	electionResult talk_to.ElectionResult,
+	electionResult election_result_api_for.VoteCurrentResult,
 	currentTerm int,
 	workerId int,
 	state raft_type.State,

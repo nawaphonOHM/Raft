@@ -6,23 +6,24 @@ import (
 
 	"raft/src/dto"
 	"raft/src/election_consideration/election_consideration_main_interface"
-	"raft/src/election_consideration/talk_to"
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
 	"raft/src/raft_state"
+	"raft/src/vote_current_result/vote_current_result_api_for"
 )
 
 type electionConsideration struct {
-	approveChannel talk_to.LimitedTimeUsageChannel
+	approveChannel limited_time_usage_channel_api_for.ElectionConsideration
 
 	ctx context.Context
 
-	currentSituation talk_to.VoteCurrentResult
+	currentSituation vote_current_result_api_for.ElectionConsideration
 }
 
 func (e *electionConsideration) Consider() {
 
 	go func(
-		approveChannel talk_to.LimitedTimeUsageChannel,
-		currentSituation talk_to.VoteCurrentResult,
+		approveChannel limited_time_usage_channel_api_for.ElectionConsideration,
+		currentSituation vote_current_result_api_for.ElectionConsideration,
 		ctx context.Context,
 		self *electionConsideration,
 	) {
@@ -76,7 +77,7 @@ func (e *electionConsideration) Consider() {
 }
 
 func NewElectionConsideration(
-	approveChannel talk_to.LimitedTimeUsageChannel,
+	approveChannel limited_time_usage_channel_api_for.ElectionConsideration,
 	ctx context.Context,
 	currentSituation any,
 ) election_consideration_main_interface.ElectionConsideration {
@@ -84,6 +85,6 @@ func NewElectionConsideration(
 	return &electionConsideration{
 		approveChannel:   approveChannel,
 		ctx:              ctx,
-		currentSituation: currentSituation.(talk_to.VoteCurrentResult),
+		currentSituation: currentSituation.(vote_current_result_api_for.ElectionConsideration),
 	}
 }

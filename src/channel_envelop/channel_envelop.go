@@ -6,7 +6,8 @@ import (
 
 	"raft/src/channel_envelop/internal_used_interfaace"
 	"raft/src/channel_envelop/main_interface"
-	"raft/src/channel_envelop/talk_to"
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
+	"raft/src/unlimited_time_usage_channel/unlimited_time_usage_channel_api_for"
 )
 
 type channelEnvelop struct {
@@ -24,7 +25,7 @@ func (e *channelEnvelop) IsBroken() bool {
 }
 
 func (e *channelEnvelop) Close() {
-	e.instance.(talk_to.UnlimitedTimeUsageChannel).Close()
+	e.instance.(unlimited_time_usage_channel_api_for.ChannelEnvelop).Close()
 }
 
 func (e *channelEnvelop) Channel() <-chan any {
@@ -40,13 +41,13 @@ func NewChannelEnvelop(instance any) main_interface.ChannelInterface {
 		{
 			log.Fatalf("instance must not be a nil")
 		}
-	case talk_to.LimitedTimeUsageChannel:
+	case limited_time_usage_channel_api_for.ChannelEnvelop:
 		{
-			return &channelEnvelop{instance: instance.(talk_to.LimitedTimeUsageChannel)}
+			return &channelEnvelop{instance: instance.(limited_time_usage_channel_api_for.ChannelEnvelop)}
 		}
-	case talk_to.UnlimitedTimeUsageChannel:
+	case unlimited_time_usage_channel_api_for.ChannelEnvelop:
 		{
-			return &channelEnvelop{instance: instance.(talk_to.UnlimitedTimeUsageChannel)}
+			return &channelEnvelop{instance: instance.(unlimited_time_usage_channel_api_for.ChannelEnvelop)}
 		}
 
 	default:

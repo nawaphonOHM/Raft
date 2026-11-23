@@ -8,24 +8,28 @@ import (
 
 	"raft/src/change_checker"
 	"raft/src/dto"
+	"raft/src/election_consideration/builder/election_consideration_builder_api_for"
 	"raft/src/election_process/election_process_required_params"
 	"raft/src/election_process/main_interface"
-	"raft/src/election_process/talk_to"
+	"raft/src/election_result/election_result_api_for"
 	customerror "raft/src/errors"
 	"raft/src/limited_time_usage_channel"
+	"raft/src/limited_time_usage_channel/limited_time_usage_channel_api_for"
 	"raft/src/raft_state"
+	"raft/src/vote_current_result/vote_current_result_api_for"
+	"raft/src/vote_monitor/vote_monitor_api_for"
 )
 
 type electionProcess struct {
 	raftParams election_process_required_params.Raft
 
-	voteMonitor []talk_to.VoteMonitor
+	voteMonitor []vote_monitor_api_for.ElectionProcess
 
-	voteCurrentResult talk_to.VoteCurrentResult
+	voteCurrentResult vote_current_result_api_for.ElectionProcess
 
-	electionConsiderationBuilder talk_to.ElectionConsiderationBuilder
+	electionConsiderationBuilder election_consideration_builder_api_for.ElectionProcess
 
-	stateChangeChannelObj talk_to.LimitedTimeUsageChannel
+	stateChangeChannelObj limited_time_usage_channel_api_for.ElectionProcess
 }
 
 func (e *electionProcess) StartElection() {
@@ -48,7 +52,7 @@ func (e *electionProcess) StartElection() {
 
 	e.requestOtherWorkersAcceptLeader()
 
-	if electionResult := e.voteCurrentResult.ElectionResult().(talk_to.ElectionResult); !electionResult.Accept() {
+	if electionResult := e.voteCurrentResult.ElectionResult().(election_result_api_for.ElectionProcess); !electionResult.Accept() {
 		e.raftParams.SetNextIndexAndMatchIndex(nil, nil)
 
 		if expectedError := customerror.NewTimeOutErrorImplementationForComparingType(); !errors.As(electionResult.Why(), expectedError) {
@@ -192,7 +196,7 @@ func (e *electionProcess) requestOtherWorkersAcceptLeader() {
 		}
 	}
 
-	channels := make([]talk_to.LimitedTimeUsageChannel, 0)
+	channels := make([]limited_time_usage_channel_api_for.ElectionProcess, 0)
 
 	for index := 0; index < e.raftParams.PeersSize(); index++ {
 
@@ -289,14 +293,14 @@ func voteItself() bool {
 func NewElection(
 	raftParams election_process_required_params.Raft,
 	voteMonitor []any,
-	voteCurrentResult talk_to.VoteCurrentResult,
-	electionConsiderationBuilder talk_to.ElectionConsiderationBuilder,
+	voteCurrentResult vote_current_result_api_for.ElectionProcess,
+	electionConsiderationBuilder election_consideration_builder_api_for.ElectionProcess,
 ) main_interface.ElectionProcess {
 
-	newVoteMonitor := make([]talk_to.VoteMonitor, 0)
+	newVoteMonitor := make([]vote_monitor_api_for.ElectionProcess, 0)
 
 	for _, monitor := range voteMonitor {
-		newVoteMonitor = append(newVoteMonitor, monitor.(talk_to.VoteMonitor))
+		newVoteMonitor = append(newVoteMonitor, monitor.(vote_monitor_api_for.ElectionProcess))
 	}
 
 	return &electionProcess{
